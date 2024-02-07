@@ -4,9 +4,25 @@ CHANGES - OpenPrinting CUPS 2.4.8 - TBA
 Changes in CUPS v2.4.8 (TBA)
 ----------------------------
 
-- Fixed memory leak when unloading a job (Issue #813)
-- Raised `cups_enum_dests()` timeout for listing available IPP printers (Issue #751)
+- Fixed printing of jobs with job name longer than 255 chars on older printers (Issue #644)
 - Really backport fix for Issue #742
+- Raised `cups_enum_dests()` timeout for listing available IPP printers (Issue #751)
+- Fixed memory leak when unloading a job (Issue #813)
+- Fixed memory leak when creating color profiles (Issue #815)
+- Added warning if the device has to be asked for 'all,media-col-database' separately
+  (Issue #829)
+- Added new value for 'lpstat' option '-W' - successfull - for getting
+  successfully printed jobs (Issue #830)
+- Fixed crash in `scan_ps()` if incoming argument is NULL (Issue #831)
+- Fixed setting job state reasons for successful jobs (Issue #832)
+- Fixed infinite loop in IPP backend if hostname is IP address with Kerberos (Issue #838)
+- Added additional check on socket if `revents` from `poll()` returns POLLHUP
+  together with POLLIN or POLLOUT in `httpAddrConnect2()` (Issue #839)
+- Fixed crash in `ppdEmitString()` if `size` is NULL (Issue #850)
+- Fixed reporting `media-source-supported` when sharing printer which has numbers as strings
+  instead of keywords as `InputSlot` values (Issue #859)
+- Fixed IPP backend to support the "print-scaling" option with IPP printers
+  (Issue #862)
 
 
 Changes in CUPS v2.4.7 (2023-09-20)
