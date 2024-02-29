@@ -2609,9 +2609,17 @@ ippNextAttribute(ipp_t *ipp)		/* I - IPP message */
 /*
  * 'ippNew()' - Allocate a new IPP message.
  */
-
 ipp_t *					/* O - New IPP message */
 ippNew(void)
+{
+    return ippNewFlg(0);
+}
+
+/*
+ * 'ippNew()' - Allocate a new IPP message with flags
+ */
+ipp_t *					/* O - New IPP message */
+ippNewFlg(unsigned flags)		/* I - IPP_FLG_* flags */
 {
   ipp_t			*temp;		/* New IPP message */
   _cups_globals_t	*cg = _cupsGlobals();
@@ -2631,6 +2639,7 @@ ippNew(void)
     if (cg->server_version == 0)
       _cupsSetDefaults();
 
+    temp->flags = flags;
     temp->request.any.version[0] = (ipp_uchar_t)(cg->server_version / 10);
     temp->request.any.version[1] = (ipp_uchar_t)(cg->server_version % 10);
     temp->use                    = 1;
@@ -2655,6 +2664,16 @@ ippNew(void)
 ipp_t *					/* O - IPP request message */
 ippNewRequest(ipp_op_t op)		/* I - Operation code */
 {
+    return ippNewRequestFlg(op, 0);
+}
+
+/*
+ *  'ippNewRequestFlg()' - Allocate a new IPP request message with flags.
+ */
+ipp_t *					/* O - IPP request message */
+ippNewRequestFlg(ipp_op_t op,		/* I - Operation code */
+                 unsigned flags)	/* I - IPP_FLG_* flags */
+{
   ipp_t		*request;		/* IPP request message */
   cups_lang_t	*language;		/* Current language localization */
   static int	request_id = 0;		/* Current request ID */
@@ -2668,7 +2687,7 @@ ippNewRequest(ipp_op_t op)		/* I - Operation code */
   * Create a new IPP message...
   */
 
-  if ((request = ippNew()) == NULL)
+  if ((request = ippNewFlg(flags)) == NULL)
     return (NULL);
 
  /*
@@ -2722,6 +2741,17 @@ ippNewRequest(ipp_op_t op)		/* I - Operation code */
 ipp_t *					/* O - IPP response message */
 ippNewResponse(ipp_t *request)		/* I - IPP request message */
 {
+    return ippNewResponseFlg(request, 0);
+}
+
+
+/*
+ * 'ippNewResponseFlg()' - Allocate a new IPP response message with flags.
+ */
+ipp_t *					/* O - IPP response message */
+ippNewResponseFlg(ipp_t *request,	/* I - IPP request message */
+                  unsigned flags)	/* I - IPP_FLG_* flags */
+{
   ipp_t			*response;	/* IPP response message */
   ipp_attribute_t	*attr;		/* Current attribute */
 
@@ -2737,7 +2767,7 @@ ippNewResponse(ipp_t *request)		/* I - IPP request message */
   * Create a new IPP message...
   */
 
-  if ((response = ippNew()) == NULL)
+  if ((response = ippNewFlg(flags)) == NULL)
     return (NULL);
 
  /*
@@ -3040,7 +3070,7 @@ ippReadIO(void       *src,		/* I - Data source */
 
           DEBUG_printf(("2ippReadIO: name length=%d", n));
 
-          if (n && parent && ipp->membername_seen)
+          if (n && parent && (ipp->flags & IPP_FLG_ALLOW_NAMED_MEMBERS) == 0)
           {
 	    /*
 	     * According to RFC 8010, attributes within collection must not have name.
@@ -3052,13 +3082,14 @@ ippReadIO(void       *src,		/* I - Data source */
 	     *
 	     * Pantum M7300FDW is known to have this bug in firmware.
 	     *
-	     * So if we have not seen IPP_TAG_MEMBERNAME while decoding the current
-	     * message, we allow sender to violate this rule and treat attribute
+	     * Setting IPP_FLG_ALLOW_NAMED_MEMBERS in ippNewFlg, ippNewRequestFlg
+	     * and ippNewResponseFlg allows to violate this rule and treat attribute
 	     * name as member name.
 	     */
 
             _cupsSetError(IPP_STATUS_ERROR_INTERNAL, _("Invalid named IPP attribute in collection."), 1);
             DEBUG_puts("1ippReadIO: bad attribute name in collection.");
+            cups_debug_printf("1ippReadIO: bad attribute name in collection.");
 	    goto rollback;
           }
           else if (n == 0 && tag != IPP_TAG_MEMBERNAME && tag != IPP_TAG_END_COLLECTION)
@@ -3201,7 +3232,6 @@ ippReadIO(void       *src,		/* I - Data source */
 	    DEBUG_printf(("2ippReadIO: membername, ipp->current=%p, ipp->prev=%p", (void *)ipp->current, (void *)ipp->prev));
 
 	    value = attr->values;
-	    ipp->membername_seen = 1;
 	  }
 	  else if (tag != IPP_TAG_END_COLLECTION)
 	  {
@@ -3483,7 +3513,7 @@ ippReadIO(void       *src,		/* I - Data source */
 	        * Oh, boy, here comes a collection value, so read it...
 		*/
 
-                value->collection = ippNew();
+                value->collection = ippNewFlg(ipp->flags);
 
                 if (n > 0)
 		{

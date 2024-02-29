@@ -726,6 +726,9 @@ cupsConnectDest(
     encryption = HTTP_ENCRYPTION_IF_REQUESTED;
 
   http = httpConnect2(hostname, port, addrlist, AF_UNSPEC, encryption, 1, 0, NULL);
+  if (flags & CUPS_DEST_FLAGS_DEVICE)
+    httpSetIppResponseFlags(http, IPP_FLG_WITH_HW_WORKAROUNDS);
+
   httpAddrFreeList(addrlist);
 
  /*

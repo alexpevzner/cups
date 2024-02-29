@@ -2432,7 +2432,6 @@ ippSetPort(int p)			/* I - Port number to use */
   _cupsGlobals()->ipp_port = p;
 }
 
-
 /*
  * 'ippStateString()' - Return the name corresponding to a state value.
  *

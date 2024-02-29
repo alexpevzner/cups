@@ -5348,6 +5348,8 @@ create_local_bg_thread(
     return (NULL);
   }
 
+  httpSetIppResponseFlags(http, IPP_FLG_WITH_HW_WORKAROUNDS);
+
  /*
   * Query the printer for its capabilities...
   */

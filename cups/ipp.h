@@ -937,6 +937,28 @@ extern int		ippValidateAttributes(ipp_t *ipp) _CUPS_API_1_7;
 /**** New in CUPS 2.0 ****/
 extern const char	*ippStateString(ipp_state_t state) _CUPS_API_2_0;
 
+/**** New in CUPS 2.4 ****/
+
+/* Flags for ippNewFlg, ippNewRequestFlg and ippNewResponseFlg
+ *
+ * With these flags IPP protocol parser allows some violations
+ * of the protocol specification. These flags intended for testing
+ * and implementing workarounds for firmware bugs
+ *
+ * Use wisely and with care!
+ */
+#  define IPP_FLG_ALLOW_NAMED_MEMBERS	0x01	/* Allow collection member
+						 * names to be encoded as
+						 * attribute name, not using
+						 * IPP_TAG_MEMBERNAME */
+
+#  define IPP_FLG_WITH_HW_WORKAROUNDS		IPP_FLG_ALLOW_NAMED_MEMBERS
+
+extern ipp_t		*ippNewFlg(unsigned flags) _CUPS_PUBLIC;
+extern ipp_t		*ippNewRequestFlg(ipp_op_t op,
+			                  unsigned flags) _CUPS_PUBLIC;
+extern ipp_t		*ippNewResponseFlg(ipp_t *request,
+			                  unsigned flags) _CUPS_PUBLIC;
 
 /*
  * C++ magic...

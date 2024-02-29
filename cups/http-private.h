@@ -307,6 +307,9 @@ struct _http_s				/**** HTTP connection structure ****/
 					/* Allocated field values */
   			*default_fields[HTTP_FIELD_MAX];
 					/* Default field values, if any */
+
+  /**** New in CUPS 2.4 *****/
+  unsigned              ipp_rsp_flags;	/* IPP_FLG_* for parsing IPP responses */
 };
 #  endif /* !_HTTP_NO_PRIVATE */
 

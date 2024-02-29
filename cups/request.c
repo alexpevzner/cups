@@ -383,7 +383,7 @@ cupsGetResponse(http_t     *http,	/* I - Connection to server or @code CUPS_HTTP
     * Get the IPP response...
     */
 
-    response = ippNew();
+    response = ippNewFlg(httpIppResponseFlags(http));
 
     while ((state = ippRead(http, response)) != IPP_STATE_DATA)
       if (state == IPP_STATE_ERROR)

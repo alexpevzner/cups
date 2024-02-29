@@ -678,6 +678,7 @@ main(int  argc,				/* I - Number of command-line args */
   http = httpConnect2(hostname, port, addrlist, AF_UNSPEC, cupsEncryption(), 1,
                       0, NULL);
   httpSetTimeout(http, 30.0, timeout_cb, NULL);
+  httpSetIppResponseFlags(http, IPP_FLG_WITH_HW_WORKAROUNDS);
 
  /*
   * See if the printer supports SNMP...
@@ -2542,6 +2543,7 @@ monitor_printer(
   http = httpConnect2(monitor->hostname, monitor->port, NULL, AF_UNSPEC,
                       monitor->encryption, 1, 0, NULL);
   httpSetTimeout(http, 30.0, timeout_cb, NULL);
+  httpSetIppResponseFlags(http, IPP_FLG_WITH_HW_WORKAROUNDS);
   if (username[0])
     cupsSetUser(username);
 

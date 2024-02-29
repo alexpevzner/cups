@@ -603,6 +603,10 @@ extern void		httpShutdown(http_t *http) _CUPS_API_2_0;
 extern const char	*httpStateString(http_state_t state) _CUPS_API_2_0;
 extern const char	*httpURIStatusString(http_uri_status_t status) _CUPS_API_2_0;
 
+/* New in CUPS 2.4 */
+extern unsigned		httpIppResponseFlags(http_t *http) _CUPS_API_2_4;
+extern void		httpSetIppResponseFlags(http_t *http, unsigned flags) _CUPS_API_2_4;
+
 /*
  * C++ magic...
  */

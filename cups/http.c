@@ -2652,6 +2652,37 @@ httpSetKeepAlive(
     http->keep_alive = keep_alive;
 }
 
+/*
+ * 'httpIppResponseFlags()' - Get IPP_FLG_* flags for parsing IPP responses
+ * received from this HTTP connection
+ *
+ * @since CUPS 2.4@
+ */
+unsigned				/* IPP_FLG_* flags for IPP responses */
+httpIppResponseFlags(
+    http_t           *http)		/* I - HTTP connection */
+{
+  if (http)
+    return http->ipp_rsp_flags;
+
+  return 0;
+}
+
+/*
+ * 'httpSetIppResponseFlags' - Set IPP_FLG_* flags for parsing IPP responses
+ * received from this HTTP connection
+ *
+ * @since CUPS 2.4@
+ */
+void
+httpSetIppResponseFlags(
+    http_t           *http,		/* I - HTTP connection */
+    unsigned         flags)		/* IPP_FLG_* flags for IPP responses */
+{
+  if (http)
+    http->ipp_rsp_flags = flags;
+}
+
 
 /*
  * 'httpSetLength()' - Set the content-length and content-encoding.

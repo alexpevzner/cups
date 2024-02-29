@@ -5316,6 +5316,7 @@ cups_connect(http_t     **http,		/* IO - Current HTTP connection */
   {
     httpClose(*http);
     *http = httpConnect2(host, port, NULL, AF_UNSPEC, encryption, 1, 5000, NULL);
+    httpSetIppResponseFlags(*http, IPP_FLG_WITH_HW_WORKAROUNDS);
   }
 
   return (*http != NULL);
